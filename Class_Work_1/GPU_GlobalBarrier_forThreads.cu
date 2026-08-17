@@ -7,32 +7,15 @@
 #include <cuda.h>
 
 
-__device__ int valForBlock0 = 0;
-__device__ int valForBlock1 = 0;
-__device__ int valForBlock2 = 0;
-__device__ int valForBlock3 = 0;
+__device__ int counter = 0;
 
 __global__ void BarrierFunction()
 {
 
 	printf("Thread %d in Block %d Task1\n", threadIdx.x ,blockIdx.x);
-        if (blockIdx.x == 0)
-	{
-		atomicAdd(&valForBlock0, 1);
-	}
-	if (blockIdx.x == 1)
-	{
-		atomicAdd(&valForBlock1, 1);
-	}
-	if (blockIdx.x == 2)
-	{
-		atomicAdd(&valForBlock2, 1);
-	}
-	if (blockIdx.x == 3)
-	{
-		atomicAdd(&valForBlock3, 1);
-	}
-	while ( atomicAdd(&valForBlock0,0) < 128 || atomicAdd(&valForBlock1,0) < 128 || atomicAdd(&valForBlock2,0) < 128 || atomicAdd(&valForBlock3,0) <128 ); 
+	atomicAdd(&counter, 1);
+
+	while ( atomicAdd(&counter, 0) < 512 ); 
 	
 	printf("Thread %d in Block %d Task2\n", threadIdx.x, blockIdx.x );
 
